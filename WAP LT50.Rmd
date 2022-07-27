@@ -1,0 +1,63 @@
+---
+title: "WAP_LT50"
+author: "Erin de Leon Sanchez"
+date: "7/26/2022"
+output: html_document
+---
+
+```{r setup, include = TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+### Set up and attach packages necessary for LT50 data analysis  
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor) # don't know if I need this, but I attached it in case I want to clean anything in the .csv up
+```
+
+
+### Read in the data
+
+```{r}
+lt50_morula <- read_csv(here("wap_morula_tt_072022.csv"))
+lt50_prism <- read_csv(here("wap_prism_tt_072022.csv"))
+```
+
+
+### Wrangle the data 
+
+```{r}
+lt50_morula %>% 
+  group_by(treatment) %>% 
+  select(dev_stage, treatment, temp, alive, dead)
+
+ggplot(data = lt50_morula, aes(x= temp, y = alive)) +
+  geom_point(aes(color = treatment))
+  
+```
+
+### GLM
+
+```{r}
+f1 <- alive ~ treatment + temp
+
+lt50_morula_blr1 <- glm(formula = f1, 
+                    data = lt50_morula, 
+                    family = 'binomial')
+
+# glm.fit <- glm(as.factor(Activity) ~ Mon, data = data, family = binomial)
+```
+
+
+```{r}
+lt50_prism %>% 
+  group_by(treatment) %>% 
+  select(dev_stage, treatment, temp, alive, dead)
+
+ggplot(data = lt50_prism, aes(x= temp, y = alive)) +
+  geom_point(aes(color = treatment))
+```
+
